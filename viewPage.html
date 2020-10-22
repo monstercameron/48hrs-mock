@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script defer>
+      const speaker = window.speechSynthesis;
+
+      const radios = {
+        firstNameIds: ["suggest1", "suggest2", "custom1"],
+        lastNameIds: ["suggest3", "suggest4", "custom2"],
+        customFirstName: () => document.querySelector(`#custom1`).value,
+        customLastName: () => document.querySelector(`#custom2`).value,
+      };
+
+      const buttons = {
+        sayNameButtionIds: ["playFirstName", "playLastName"],
+      };
+
+      const sayMyname = (speaker, name) => {
+        const pronoucedName = new SpeechSynthesisUtterance(name);
+        speaker.resume();
+        speaker.cancel();
+        speaker.speak(pronoucedName);
+      };
+
+      const listenForCheck = (selected, radioList) => () => {
+        console.log(selected);
+        singleCheckCleanUp(selected, radioList);
+      };
+
+      const singleCheckCleanUp = (checked, radioList) => radioList
+      .map(id=>document.querySelector(`#${id}`))
+      .forEach((elem)=> {
+           if (elem.id !== checked) {
+            elem.checked = false;
+          }
+      });
+
+      const attachListenerToElems = (radioList) => {
+        for (const elem of radioList) {
+          const elemDOM = document.querySelector(`#${elem}`);
+          elemDOM.onchange = listenForCheck(elem, radioList);
+        }
+      };
+
+      const handlePlayName = (whichName) => () => {
+        console.log("test");
+        if (whichName === "first") {
+          sayMyname(speaker, radios.customFirstName());
+        } else if (whichName === "last") {
+          sayMyname(speaker, radios.customLastName());
+        }
+      };
+
+      const attachPlayNamehandler = (playNameButtons) =>
+        playNameButtons
+          .map((id) => document.querySelector(`#${id}`))
+          .forEach((elem) => {
+            elem.onclick =
+              elem.id === "playFirstName"
+                ? handlePlayName("first")
+                : handlePlayName("last");
+          });
+
+          sayFullName = () => sayMyname(speaker,document.querySelector('#name').textContent)
+
+      window.onload = () => {
+        attachListenerToElems(radios.firstNameIds);
+        attachListenerToElems(radios.lastNameIds);
+        attachPlayNamehandler(buttons.sayNameButtionIds);
+      };
+    </script>
+    <style>
+      .page {
+        display: grid;
+        grid-template-columns: 220px auto;
+      }
+      .pageMenu {
+        grid-column: 1;
+        background-color: rgb(82, 82, 82);
+        height: 100vh;
+      }
+      .pageContent {
+        grid-column: 2;
+        background-color: rgb(233, 233, 233);
+        height: 100vh;
+        overflow: hidden;
+      }
+      .pageContentMenu {
+        background-color: rgb(9, 70, 65);
+      }
+      .pageContentOptions {
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
+      .ts-0 {
+        font-size: 0.7em;
+      }
+      .ts-1 {
+        font-size: 0.75em;
+      }
+      .ts-2 {
+        font-size: 1em;
+      }
+      .ts-3 {
+        font-size: 1.25em;
+      }
+      .ts-4 {
+        font-size: 1.5em;
+      }
+      .ts-5 {
+        font-size: 1.75em;
+      }
+      .u {
+        text-decoration: underline;
+      }
+      .pronounceInput {
+        border: none;
+        border-bottom: 1px solid;
+      }
+
+      .iconFix {
+        vertical-align: -12px;
+      }
+      .activeMenuOption {
+        background-color: rgb(59, 58, 58);
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+      }
+      .cursor {
+        cursor: pointer;
+      }
+	  
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid p-0 m-0">
+      <div class="page">
+        <div class="pageMenu container-fluid text-white px-0 py-1">
+          <div class="row px-4 pb-3 pt-2">
+            <div class="col-6"><b>UKG</b></div>
+            <div class="col-6 text-right">
+              <span class="material-icons cursor"> close </span>
+            </div>
+          </div>
+          <div class="row p-0">
+            <div class="col-6 text-center p-0">
+              <span class="material-icons cursor"> favorite_border </span>
+            </div>
+            <div class="col-6 text-center p-0">
+              <span class="material-icons cursor"> person </span>
+            </div>
+          </div>
+          <div
+            class="ml-auto mr-2"
+            style="width: 45%; height: 2px; background-color: white"
+          ></div>
+          <div
+            style="
+              height: 1px;
+              width: 100%;
+              background-color: rgba(255, 255, 255, 0.212);
+            "
+          ></div>
+          <div class="row px-3 pt-3">
+            <div class="col-12"><h5>Myself</h5></div>
+            <div class="col-6">Personal</div>
+            <div class="col-6 text-right">
+              <span class="material-icons cursor"> keyboard_arrow_up </span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-10 py-2 ts-0 mt-2 activeMenuOption cursor">
+              
+              <a href="editpage.html" style="text-decoration: none;color: white;">
+              <span class="pl-4">Employee Summary</span>
+              </a>
+            </div>
+            <div class="col-10 py-2 ts-0 mt-2  cursor">
+              <a href="editpage.html" style="text-decoration: none;color: white;">
+              <span class="pl-4">Name, Address, and Telephone</span>
+            </a>
+            </div>
+          </div>
+        </div>
+        <div class="pageContent">
+          <div class="row pageContentMenu p-2 m-0 text-white">
+            <div class="col-auto p-0 pl-3 m-0">
+              <span class="material-icons iconFix cursor"> arrow_back </span>
+            </div>
+            <div class="col-auto pt-1">
+              <h5>Name, Address, and Telephone</h5>
+            </div>
+            <div class="col-1 ml-auto px-1 text-right">
+              <input
+                type="text"
+                class="form-control"
+                style="
+                  border-radius: 50px;
+                  background-color: rgb(6, 53, 22);
+                  border: none;
+                  text-align: center;
+                "
+                placeholder="Search"
+              />
+            </div>
+            <div class="col-auto px-2">
+              <span class="material-icons iconFix cursor">
+                notifications_none
+              </span>
+            </div>
+            <div class="col-auto pl-2 pr-5">
+              <span class="material-icons iconFix cursor"> help_outline </span>
+            </div>
+            <div
+              class="mr-2"
+              style="width: 1px; background-color: rgba(255, 255, 255, 0.411)"
+            ></div>
+            <div class="col-auto p-0">
+              <span class="material-icons iconFix cursor">
+                account_circle
+              </span>
+            </div>
+            <div class="col-auto p-0 pl-2 pt-2 cursor">Willis ailey</div>
+            <div class="col-auto p-0 pl-2 pt-2">
+              <span class="material-icons cursor"> arrow_drop_down </span>
+            </div>
+          </div>
+          <div class="row p-0 m-0">
+            <div class="col-10 p-0 m-0">
+              <div class="pageContentOptions px-4">
+				<div class="row">
+					<div class="col-1 pl-1 pt">
+						<svg width="96" height="96" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<circle cx="64" cy="64" r="64" fill="#C4C4C4"/>
+						</svg>
+					</div>
+					<div class="col-2 pl-4 pt-5">
+						<span id='name'>Jackie Taylor</span>  <br>(jack-ee Tail-er)
+					</div>
+					<div class="col-1 pl-0 pt-5">
+						 <span class="material-icons cursor" onclick="sayFullName()"> volume_up </span>
+					</div>
+				</div>
+				<div class="row pt-3">
+					<div class="col-3">
+						HR US Admin Payroll (PS)
+					</div>
+					<div class="col-1">
+						909090980
+					</div>
+					<div class="col-1">
+						<a href="#">JackieTaylor@ukg.com</a>
+					</div>
+				
+				</div>
+				<div class="row pt-3">
+					<h6>Personal Information</h6>
+				</div>
+				<div class="row pt-3">
+					<div class="col-5">
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>Name</dt>
+									<dd>Jackie Taylor</dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-1">
+								<dl>
+									<dt>Preferred</dt>
+									<dd>Jackie</dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-2">
+								<dl>
+									<dt>Employee Number</dt>
+									<dd>111222334455</dd>
+								<dl>
+							</div>
+				
+						</div>
+						<div class="row">
+							<div class ="col-2">
+								<dl>
+									<dt>Time Clock</dt>
+									<dd>11122</dd>
+								<dl>
+							</div>
+				
+						</div>
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>Address</dt>
+									<dd>120 N place NoWhere FL 33045 United States</dd>
+								<dl>
+							</div>
+				
+						</div>
+					</div>
+					<div class="col-5">
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>Email</dt>
+									<dd>jt@CompanyEmail.com</dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>AltEmail</dt>
+									<dd> </dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>MailStop</dt>
+									<dd>Training</dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>Primary Home Phone</dt>
+									<dd>+1(123)456-7890</dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>Primary Work Phone</dt>
+									<dd>+1(123)456-7890</dd>
+								<dl>
+							</div>
+						</div>
+						<div class="row">
+							<div class ="col-5">
+								<dl>
+									<dt>Work Extension</dt>
+									<dd>9089</dd>
+								<dl>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+
+				
+				
+              </div>
+            </div>
+            <div class="col-2" style="background-color: rgb(233, 227, 227)">
+              <div class="row pl-3">
+                <div class="col-12 pt-3 pt-2"><h6>Things I Can Do</h6></div>
+                <div class="col-12 text-capitalize text-muted pt-2 ts-0">
+                  for this tab set
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="UPeeSumamry.html"> change name, address or telephone </a>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#"> add alternative phone number </a>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#">add contact</a>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#">add emergency contact</a>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#"> change private information </a>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#"> voluntary self-identification of disability </a>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#"> add identification doument </a>
+                </div>
+                <div class="col-12 text-capitalize pt-4 pb-1">
+                  <h6>learning resources i</h6>
+                </div>
+                <div class="col-12 text-capitalize ts-1 py-1 u">
+                  <a href="#">human resources - resourcesfor employees</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
